@@ -13,14 +13,16 @@ namespace AdventOfCode.day3
 
         public static void Main(string[] args)
         {
+            Data = Data.Replace("   ", "  ");
+            CalculateDay1();
             CalculateDay2();
         }
 
         public static void CalculateDay2()
         {
-            Data = Data.Trim().Replace("\r\n", "").Replace("   ", "  ");
+            Data = Data.Trim().Replace("\r\n", "");
             List<int> sides =
-                Data.Split(new string[] {"  ",}, StringSplitOptions.None).Select(x => int.Parse(x)).ToList();
+                Data.Split(new string[] {"  ",}, StringSplitOptions.None).Select(int.Parse).ToList();
             List<TriangleCluster> triangleClusters = new List<TriangleCluster>();
             while (sides.Count >= 9)
             {
@@ -47,21 +49,16 @@ namespace AdventOfCode.day3
                 }
             }
             Console.WriteLine("Total valid triangles in day 2: " + totalValidTrianglesCount);
-
         }
 
         public static void CalculateDay1()
         {
-            List<Triangle> PossibleTriangles = new List<Triangle>();
-            foreach (Triangle triangle in
-                Data.Split(new string[] {"\r\n"}, StringSplitOptions.None).Select(x => new Triangle(x)))
-            {
-                if (triangle.IsValidTriangle())
-                {
-                    PossibleTriangles.Add(triangle);
-                }
-            }
-            Console.WriteLine("Possible triangles: " + PossibleTriangles.Count);
+            List<Triangle> possibleTriangles =
+                Data.Split(new[] {"\r\n"}, StringSplitOptions.None)
+                    .Select(x => new Triangle(x))
+                    .Where(triangle => triangle.IsValidTriangle())
+                    .ToList();
+            Console.WriteLine("Possible triangles: " + possibleTriangles.Count);
         }
 
         public class TriangleCluster
@@ -93,8 +90,7 @@ namespace AdventOfCode.day3
 
             public Triangle(string sides)
             {
-                sides = sides.Replace("   ", "  ");
-                string[] split = sides.Split(new string[] {"  ",}, StringSplitOptions.None);
+                string[] split = sides.Split(new[] {"  ",}, StringSplitOptions.None);
                 Side1 = int.Parse(split[1]);
                 Side2 = int.Parse(split[2]);
                 Side3 = int.Parse(split[3]);
